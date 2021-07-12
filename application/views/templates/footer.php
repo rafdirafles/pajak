@@ -156,7 +156,7 @@
         link: url_link
       },
       success: function(data) {
-
+        console.log(data);
         if (data == 'true') {
           Swal.fire({
             title: 'DATA FAKTUR',

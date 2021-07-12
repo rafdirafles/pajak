@@ -68,8 +68,10 @@ class Transaksi extends CI_Controller
     $now = date('Y-m-d H:i:s');
     // trans db start
     $this->db->trans_begin();
+    $i = 0;
     foreach ($isi as $row) {
-      $data = [
+      $i++;
+      $dataHeader = [
         'branch_id'            => $this->session->userdata('branch_id'),
         'kdJenisTransaksi'     => $row[0],
         'fgPengganti'          => $row[1],
@@ -87,6 +89,42 @@ class Transaksi extends CI_Controller
         'statusApproval'       => $row[13],
         'statusFaktur'         => $row[14],
         'referensi'            => $row[15],
+        'create_date'          => $now,
+        'user_create'          => $this->session->userdata('username'),
+        'url_link'             => $url_link,
+      ];
+      if ($i == 1) {
+        try {
+          if (!$this->db->insert('mfaktur', $dataHeader)) {
+            $db_error = $this->db->error();
+            throw new Exception($db_error['message']);
+          } else {
+            $success = 'true';
+          }
+        } catch (Exception $e) {
+          // log_message('error: ', $e->getMessage());
+          $success = $e->getMessage();
+          $fail = 'false';
+        }
+      }
+      if ($fail == 'false') {
+        break;
+      }
+      if ($this->db->trans_status() === FALSE) {
+        $this->db->trans_rollback();
+        echo $success;
+      } else {
+        $this->db->trans_commit();
+        echo $success;
+      }
+
+      $lastId = $this->db->insert_id();
+
+      $data = [
+        'branch_id'            => $this->session->userdata('branch_id'),
+        'idMfaktur'            => $lastId,
+        'nomorFaktur'          => $row[2],
+        'noUrut'               => $i,
         'nama'                 => $row[16],
         'hargaSatuan'          => $row[17],
         'jumlahBarang'         => $row[18],
@@ -98,32 +136,9 @@ class Transaksi extends CI_Controller
         'ppnbm'                => $row[24],
         'create_date'          => $now,
         'user_create'          => $this->session->userdata('username'),
-        'url_link'             => $url_link,
       ];
-
-      try {
-        if (!$this->db->insert('tax_faktur', $data)) {
-          $db_error = $this->db->error();
-          throw new Exception($db_error['message']);
-        } else {
-          $success = 'true';
-        }
-      } catch (Exception $e) {
-        // log_message('error: ', $e->getMessage());
-        $success = $e->getMessage();
-        $fail = 'false';
-      }
-      if ($fail == 'false') {
-        break;
-      }
+      $this->db->insert('mfaktur_prod', $data);
     };
-    if ($this->db->trans_status() === FALSE) {
-      $this->db->trans_rollback();
-      echo $success;
-    } else {
-      $this->db->trans_commit();
-      echo $success;
-    }
   }
 
 

@@ -10,4 +10,8 @@ class Transaksi_model extends CI_Model
     {
         $this->db->insert_batch('tax_faktur', $table_data);
     }
+    function insert_head($data)
+    {
+        $this->db->insert('mfaktur', $data);
+    }
 }
