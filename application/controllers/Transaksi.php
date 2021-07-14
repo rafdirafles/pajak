@@ -92,33 +92,26 @@ class Transaksi extends CI_Controller
         'create_date'          => $now,
         'user_create'          => $this->session->userdata('username'),
         'url_link'             => $url_link,
+        'isSupplierReg'        => 'N'
       ];
-      if ($i == 1) {
-        try {
+
+      try {
+        if ($i == 1) {
           if (!$this->db->insert('mfaktur', $dataHeader)) {
             $db_error = $this->db->error();
             throw new Exception($db_error['message']);
           } else {
-            $success = 'true';
+            $hasil = 'true';
+            $lastId = $this->db->insert_id();
           }
-        } catch (Exception $e) {
-          // log_message('error: ', $e->getMessage());
-          $success = $e->getMessage();
-          $fail = 'false';
         }
+      } catch (Exception $e) {
+        $hasil = $e->getMessage();
+        $fail = 'true';
       }
-      if ($fail == 'false') {
+      if ($fail == 'true') {
         break;
       }
-      if ($this->db->trans_status() === FALSE) {
-        $this->db->trans_rollback();
-        echo $success;
-      } else {
-        $this->db->trans_commit();
-        echo $success;
-      }
-
-      $lastId = $this->db->insert_id();
 
       $data = [
         'branch_id'            => $this->session->userdata('branch_id'),
@@ -135,10 +128,29 @@ class Transaksi extends CI_Controller
         'tarifPpnbm'           => $row[23],
         'ppnbm'                => $row[24],
         'create_date'          => $now,
-        'user_create'          => $this->session->userdata('username'),
+        'user_create'          => $this->session->userdata('username')
       ];
-      $this->db->insert('mfaktur_prod', $data);
+
+      try {
+        if (!$this->db->insert('mfaktur_prod', $data)) {
+          $db_error = $this->db->error();
+          throw new Exception($db_error['message']);
+        } else {
+          $hasil = 'true';
+        }
+      } catch (Exception $e) {
+        $hasil = $e->getMessage();
+      }
     };
+    if ($this->db->trans_status() === FALSE) {
+      $this->db->trans_rollback();
+      // Get ERROR from Catch
+      echo $hasil;
+    } else {
+      $this->db->trans_commit();
+      // Get hasil dari else (try-catch)
+      echo $hasil;
+    }
   }
 
 
