@@ -120,11 +120,18 @@
         id: id
       },
       success: function(data) {
-        $('#namaalamat').val(id);
+        $('#masaPajakInput').val(id);
       }
     });
     return false;
   });
+</script>
+
+<script>
+  function myFunction(masaPajak) {
+    document.getElementById("masaPajakInput").value = masaPajak;
+    console.log(document.getElementById("masaPajakInput").value);
+  }
 </script>
 
 <script>
@@ -147,13 +154,17 @@
     console.log(values);
     // save values
     var url_link = $('#linkAddress').val();
+    var supplier = $('#isSupplier').val();
+    var masaPajak = $('#masaPajak').val();
     $.ajax({
       url: "<?= site_url('transaksi/simpandata'); ?>",
       type: "post",
       dataType: 'html',
       data: {
         isi: values,
-        link: url_link
+        link: url_link,
+        supplier: supplier,
+        masaPajak: masaPajak
       },
       success: function(data) {
         console.log(data);
@@ -176,8 +187,6 @@
     });
   }
 </script>
-
-
 
 <script>
   $('#sidebarToggle').click(function() {
@@ -215,16 +224,10 @@
     Cookies.set('link', '', {
       expires: 7
     });
-    Cookies.set('click', '', {
-      expires: 7
-    });
     Cookies.set('tab-pane-active', 'active show', {
       expires: 7
     });
     Cookies.set('tab-pane-link', '', {
-      expires: 7
-    });
-    Cookies.set('tab-pane-click', '', {
       expires: 7
     });
     console.log("get cookies active-tab");
@@ -235,20 +238,50 @@
     Cookies.set('click', '');
     Cookies.set('tab-pane-active', '');
     Cookies.set('tab-pane-link', 'active show');
-    Cookies.set('tab-pane-click', '');
     console.log("get cookies link-tab");
-  });
-  $('#click-tab').click(function() {
-    Cookies.set('active', '');
-    Cookies.set('link', '');
-    Cookies.set('click', 'active');
-    Cookies.set('tab-pane-active', '');
-    Cookies.set('tab-pane-link', '');
-    Cookies.set('tab-pane-click', 'active show');
-    console.log("get cookies click-tab");
   });
 </script>
 
+<script>
+  $('#custom').click(function() {
+    Cookies.set('custom', 'checked', {
+      expires: 7
+    });
+    Cookies.set('bulanini', '', {
+      expires: 7
+    });
+    Cookies.set('tgl-faktur', '', {
+      expires: 7
+    });
+    console.log("get cookies custom");
+  });
+  $('#bulanIni').click(function() {
+    Cookies.set('custom', '', {
+      expires: 7
+    });
+    Cookies.set('bulanini', 'checked', {
+      expires: 7
+    });
+    Cookies.set('tgl-faktur', '', {
+      expires: 7
+    });
+    console.log("get cookies bulanini");
+  });
+  $('#tanggalfaktur').click(function() {
+    Cookies.set('custom', '', {
+      expires: 7
+    });
+    Cookies.set('bulanini', '', {
+      expires: 7
+    });
+    Cookies.set('tgl-faktur', 'checked', {
+      expires: 7
+    });
+    console.log("get cookies tanggalfaktur");
+  });
+</script>
+
+//
 <!-- scipt untuk scan qr code pajak di menu transaksi -->
 
 </body>

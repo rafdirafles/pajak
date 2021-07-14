@@ -66,7 +66,9 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <input type="text" style="visibility:hidden" id="linkAddress" value="<?= $url_link ?>;">
+                        <input type="text" style="visibility:hidden" id="linkAddress" value="<?= $url_link ?>">
+                        <input type="text" style="visibility:hidden" id="isSupplier" value="<?= $supplier ?>">
+                        <input type="text" style="visibility:hidden" id="masaPajak" value="<?= $masaPajak ?>">
                         <?php foreach ($xml->detailTransaksi as $row) : ?>
                           <tr>
                             <td><?= $xml->kdJenisTransaksi ?></td>

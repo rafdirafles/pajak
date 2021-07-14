@@ -21,16 +21,29 @@
 							</center>
 						</div>
 						<div class="card-content">
+							<!-- <div class="card-body">
+								<h6 class="card-title"><i class="fas fa-fw fa-calendar-alt mr-2"></i>Pilih Masa Pajak</h6>
+								<div>
+									<input type="radio" id="custom" name="masaPajak">
+									<label for="custom"> Custom <input type="month" name="masaPajak" id="custom" onchange="myFunction(this.value)"></label>
+
+								</div>
+								<div>
+									<input type="radio" id="bulanIni" name="masaPajak" onchange="myFunction(this.value)" value="<?= date("m") ?>">
+									<label for="bulanIni">Bulan Ini</label>
+								</div>
+								<div>
+									<input type="radio" id="tanggalFaktur" name="masaPajak" onchange="myFunction(this.value)" value="tanggalFaktur" checked>
+									<label for="tanggalFaktur">Tanggal Faktur</label>
+								</div>
+							</div> -->
 							<div class="card-body">
 								<ul class="nav nav-tabs nav-justified">
 									<li class="nav-item">
-										<a class="nav-link <?= $_COOKIE['active']; ?>" id="active-tab" data-toggle="tab" href="#active" aria-controls="active" aria-expanded="true">Custom</a>
+										<a class="nav-link <?= $_COOKIE['active']; ?>" id="active-tab" data-toggle="tab" href="#active" aria-controls="active" aria-expanded="true">Faktur Supplier RN</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link <?= $_COOKIE['link']; ?>" id="link-tab" data-toggle="tab" href="#link" aria-controls="link" aria-expanded="false">Bulan ini</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link <?= $_COOKIE['click']; ?>" id="click-tab" data-toggle="tab" href="#click" aria-controls="click" aria-expanded="false">Bulan Tanggal Faktur Pajak</a>
+										<a class="nav-link <?= $_COOKIE['link']; ?>" id="link-tab" data-toggle="tab" href="#link" aria-controls="link" aria-expanded="false">Faktur Supplier NON-RN</a>
 									</li>
 								</ul>
 								<div class="tab-content">
@@ -39,10 +52,28 @@
 										<form action="<?= base_url('') ?>transaksi/scan" method="post" class="form group pl-3 " id="scanAction">
 											<div class="row">
 												<div class="col-md-12">
-													<!-- onchange="loadDoc(this.value)" -->
 													<div class="form-group row align-items-center">
-														<div class="col-lg-12 col-12">
+														<div class="col-lg-12 col-12 mb-1">
+															<h6>Pilih Masa Pajak : </h6>
+														</div>
+														<div class="col-lg-4 col-4">
+															<label for="custom"><input type="radio" id="custom" name="masaPajak" value="custom" <?= $_COOKIE['custom']; ?>>
+																Custom <input type="month" name="masaPajakCustom">
+															</label>
+														</div>
+														<div class="col-lg-4 col-4">
+															<label for="bulanIni"><input type="radio" id="bulanIni" name="masaPajak" value="<?= date("Y-m")  ?>" <?= $_COOKIE['bulanini']; ?>>
+																Bulan Ini</label>
+														</div>
+														<div class="col-lg-4 col-4">
+															<label for="tanggalfaktur"><input type="radio" id="tanggalfaktur" name="masaPajak" value="tanggalfaktur" <?= $_COOKIE['tgl-faktur']; ?>>
+																Tanggal Faktur</label>
+														</div>
+
+														<div class="col-lg-12 col-12 mt-2">
 															<input type="text" id="scan" placeholder="Scan Barcode" name="scan" class="form-control" autofocus>
+															<!-- <input type="text" id="masaPajakInput" name="masaPajakInput" class="form-control"> -->
+															<input type="hidden" id="supplierRn" name="supplierRn" class="form-control" value="Y">
 														</div>
 														<div class="col-lg-4 col-9">
 															<?= form_error('scan', '<small class="text-danger">', '</small>') ?>
@@ -58,10 +89,44 @@
 										</form>
 									</div>
 									<div class="tab-pane fade <?= $_COOKIE['tab-pane-link']; ?>" id="link" role="tabpanel" aria-labelledby="link-tab" aria-expanded="false">
-										<p class="m-0">Chocolate bar gummies sesame snaps. Liquorice cake sesame snaps cotton candy cake sweet brownie. Cotton candy candy canes brownie. Biscuit pudding sesame snaps pudding pudding sesame snaps biscuit tiramisu.</p>
-									</div>
-									<div class="tab-pane fade <?= $_COOKIE['tab-pane-click']; ?>" id="click" role="tabpanel" aria-labelledby="click-tab" aria-expanded="false">
-										<p class="m-0">Fruitcake marshmallow donut wafer pastry chocolate topping cake. Powder powder gummi bears jelly beans. Gingerbread cake chocolate lollipop. Jelly oat cake pastry marshmallow sesame snaps.</p>
+										<br>
+										<form action="<?= base_url('') ?>transaksi/scan" method="post" class="form group pl-3 " id="scanAction">
+											<div class="row">
+												<div class="col-md-12">
+
+													<div class="form-group row align-items-center">
+														<div class="col-lg-12 col-12 mb-1">
+															<h6>Pilih Masa Pajak : </h6>
+														</div>
+														<div class="col-lg-4 col-4">
+															<label for="custom"><input type="radio" id="custom" name="masaPajak" value="custom" <?= $_COOKIE['custom']; ?>>
+																Custom <input type="month" name="masaPajakCustom">
+															</label>
+														</div>
+														<div class="col-lg-4 col-4">
+															<label for="bulanIni"><input type="radio" id="bulanIni" name="masaPajak" value="<?= date("Y-m") ?>" <?= $_COOKIE['bulanini']; ?>>
+																Bulan Ini</label>
+														</div>
+														<div class="col-lg-4 col-4">
+															<label for="tanggalfaktur"><input type="radio" id="tanggalfaktur" name="masaPajak" value="tanggalfaktur" <?= $_COOKIE['tgl-faktur']; ?>>
+																Tanggal Faktur</label>
+														</div>
+														<div class="col-lg-12 col-12 mt-2">
+															<input type="text" id="scan" placeholder="Scan Barcode" name="scan" class="form-control" autofocus>
+															<input type="hidden" id="supplierRn" name="supplierRn" class="form-control" value="N">
+														</div>
+														<div class="col-lg-4 col-9">
+															<?= form_error('scan', '<small class="text-danger">', '</small>') ?>
+														</div>
+													</div>
+													<div>
+														<center>
+															<button type="submit" class="btn btn-success mr-1"><i class="ft-alert-circle mr-2"></i>CEK FAKTUR</button>
+														</center>
+													</div>
+												</div>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>

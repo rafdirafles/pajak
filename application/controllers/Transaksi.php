@@ -32,23 +32,29 @@ class Transaksi extends CI_Controller
     // Jika benar maka aksi dijalankan
     else {
       $url  = $this->input->post('scan');
+      $supplier  = $this->input->post('supplierRn');
+      if ($this->input->post('masaPajak') == 'custom') {
+        $masaPajak  = $this->input->post('masaPajakCustom');
+      } else {
+        $masaPajak  = $this->input->post('masaPajak');
+      }
 
       $data = $this->http_request($url);
-
       $profile['tabel'] = simplexml_load_string($data);
-      $this->tabel($profile, $url);
-      // ubah string JSON menjadi array
+      $this->tabel($profile, $url, $supplier, $masaPajak);
     }
   }
 
   // Halaman tabel data after scan proses
-  public function tabel($profile, $url)
+  public function tabel($profile, $url, $supplier, $masaPajak)
   {
     $data['title'] = "Scan Faktur";
     $data['user'] = $this->db->get_where('mst_user', ['username' => $this->session->userdata('username')])->row_array();
 
     $data['xml'] = $profile['tabel'];
     $data['url_link'] = $url;
+    $data['supplier'] = $supplier;
+    $data['masaPajak'] = $masaPajak;
     // $test = $data['xml'] = $profile['tabel'];
 
     // var_dump($test);
@@ -65,6 +71,19 @@ class Transaksi extends CI_Controller
   {
     $isi = $this->input->post('isi');
     $url_link = $this->input->post('link');
+    $isSupplierReg = $this->input->post('supplier');
+    $masaPajak = $this->input->post('masaPajak');
+    if ($masaPajak == 'tanggalfaktur') {
+      foreach ($isi as $row) {
+        $bulanPajak = DateTime::createFromFormat('d/m/Y', $row[3])->format('m');
+        $bulanPajak += 0;
+        $tahunPajak = DateTime::createFromFormat('d/m/Y', $row[3])->format('Y');
+      }
+    } else {
+      $bulanPajak = substr($masaPajak, -2);
+      $bulanPajak += 0;
+      $tahunPajak = substr($masaPajak, 0, 4);
+    }
     $now = date('Y-m-d H:i:s');
     // trans db start
     $this->db->trans_begin();
@@ -91,8 +110,10 @@ class Transaksi extends CI_Controller
         'referensi'            => $row[15],
         'create_date'          => $now,
         'user_create'          => $this->session->userdata('username'),
+        'masaPajak'            => $bulanPajak,
+        'tahunPajak'           => $tahunPajak,
         'url_link'             => $url_link,
-        'isSupplierReg'        => 'N'
+        'isSupplierReg'        => $isSupplierReg
       ];
 
       try {
