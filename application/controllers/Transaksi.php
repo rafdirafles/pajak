@@ -174,7 +174,35 @@ class Transaksi extends CI_Controller
     }
   }
 
+  public function export_pm()
+  {
+    $data['title'] = "Export Pm";
+    $data['user'] = $this->db->get_where('mst_user', ['username' => $this->session->userdata('username')])->row_array();
 
+    $this->form_validation->set_rules('scan', 'SCAN BARCODE', 'required');
+
+    if ($this->form_validation->run() == false) {
+      $this->load->view('templates/header', $data);
+      $this->load->view('templates/navbar', $data);
+      $this->load->view('templates/sidebar', $data);
+      $this->load->view('transaksi/exportPM', $data);
+      $this->load->view('templates/footer');
+    }
+    // Jika benar maka aksi dijalankan
+    else {
+      $url  = $this->input->post('scan');
+      $supplier  = $this->input->post('supplierRn');
+      if ($this->input->post('masaPajak') == 'custom') {
+        $masaPajak  = $this->input->post('masaPajakCustom');
+      } else {
+        $masaPajak  = $this->input->post('masaPajak');
+      }
+
+      $data = $this->http_request($url);
+      $profile['tabel'] = simplexml_load_string($data);
+      $this->tabel($profile, $url, $supplier, $masaPajak);
+    }
+  }
 
 
 
